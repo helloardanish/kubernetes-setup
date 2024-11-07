@@ -1,0 +1,66 @@
+# platform-mongo.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platform-mongo
+  template:
+    metadata:
+      labels:
+        app: platform-mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:3.4.1
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-mongo-service
+spec:
+  selector:
+    app: platform-mongo
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017
+
+
+#
+
+# kubectl apply -f platform-mongo.yaml
+
+# kubectl get pods
+
+# kubectl get services
+
+# kubectl describe service platform-mongo-service
+
+# kubectl describe deployment platform-mongo
+
+# kubectl delete -f platform-mongo.yaml
+
+# minikube service platform-mongo-service
+
+# platform-mongo-7b4b7b7b4b-7z5z5 it is name of pod running platform-mongo
+
+# kubectl exec -it platform-mongo-7b4b7b7b4b-7z5z5 -- /bin/bash
+
+
+# After taking access use [mongo] command to access mongo shell
+
+# create a new databases:
+
+# use mydb
+
+# db.createCollection('mycollection')
+
+# db.mycollection.insert({name: 'A R Danish', age: 25})
+
+# db.mycollection.find()
