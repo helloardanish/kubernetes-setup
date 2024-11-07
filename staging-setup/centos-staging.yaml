@@ -1,0 +1,130 @@
+#  CentOS Linux release 7.9.2009 (Core)
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: centos-staging-pod
+  labels:
+    app: centos-staging
+spec:
+  containers:
+    - name: centos-staging-container
+      image: centos:7.9.2009
+      ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        - containerPort: 8082
+        - containerPort: 8083
+      command:
+        - /bin/bash
+        - -c
+        - |
+          # Wait for manual steps, like copying the JDK folder
+          echo "CentOS pod is running"
+          tail -f /dev/null  # Keeps the container running for manual intervention
+      resources:
+        requests:
+          memory: "4Gi"    # Minimum RAM required
+          cpu: "4"         # Minimum CPU cores required
+        limits:
+          memory: "8Gi"    # Maximum RAM allowed
+          cpu: "8"         # Maximum CPU cores allowed
+
+
+# Copy the JDK:
+
+#  kubectl cp /home/a-r-danish/Downloads/openjdk-8u422-b05-linux-x64.tar.gz centos-staging-pod:/tmp/openjdk-8u422-b05-linux-x64.tar.gz
+
+# kubectl cp /home/a-r-danish/Documents/Docker-Project/staging-setup/java-builds/testing-build/testing-0.0.1-SNAPSHOT.jar centos-staging-pod:/home/java-builds/testing.jar
+
+
+#  kubectl exec -it centos-staging-pod -- /bin/bash
+
+# Run the following command to create the Pod:
+# kubectl apply -f centos-staging.yaml
+
+# Run the following command to check the status of the Pod:
+# kubectl get pods centos-staging-pod
+
+# Run the following command to access the shell of the Pod:
+# kubectl exec -it centos-staging-pod -- /bin/bash
+
+# Run the following command to delete the Pod:
+# kubectl delete pod centos-staging-pod
+
+# Run the following command to delete the Pod and its associated resources:
+# kubectl delete -f centos-staging.yaml
+
+# Run the following command to check the logs of the Pod:
+# kubectl logs centos-staging-pod
+
+
+
+# for internet access, add the following snippet to the Pod manifest:
+
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: centos
+# spec:
+#   dnsPolicy: Default
+#   containers:
+#     - name: centos
+#       image: centos:7.9.2009
+
+
+# Verify internet access by running the following command:
+
+# kubectl exec -it centos-staging-pod -- /bin/bash
+
+# ping -c 4 8.8.8.8
+
+#  ping -c 4 google.com
+
+#  kubectl get networkpolicy --all-namespaces
+
+#  minikube ssh
+#  ping -c 4 google.com
+
+#  kubectl port-forward pod/centos-staging-pod 8080:8080
+
+
+
+#===================
+
+
+
+# install-java.sh
+
+#!/bin/bash
+#  if [ ! -d "/opt/jdk" ]; then
+#  echo "JDK not found, extracting..."
+#  if [ -f "/tmp/openjdk-8u422-b05-linux-x64.tar.gz" ]; then
+#  mkdir -p /opt/jdk
+#  tar -xzf /tmp/openjdk-8u422-b05-linux-x64.tar.gz -C /opt/jdk --strip-components=1
+#  elif [ -d "/tmp/jdk-folder" ]; then
+#  mkdir -p /opt/jdk
+#  cp -r /tmp/jdk-folder/* /opt/jdk/
+#  else
+#  echo "No JDK files found. Exiting."
+#  exit 1
+#  fi
+#  else
+#  echo "JDK already installed at /opt/jdk, skipping extraction."
+#  fi
+#  export JAVA_HOME=/opt/jdk
+#  export PATH=$JAVA_HOME/bin:$PATH
+#  java -version
+#  tail -f /dev/null
+
+
+# kubectl cp install-java.sh centos-staging-pod:/tmp/install-java.sh
+
+# kubectl exec -it centos-staging-pod -- /bin/bash /tmp/install-java.sh
+
+# kubectl cp /home/a-r-danish/Documents/Docker-Project/staging-setup/java-builds/testing-build/testing-0.0.1-SNAPSHOT.jar centos-staging-pod:/home/java-builds/testing.jar
+
+# /home/java-build/testing.jar
+
+
+
